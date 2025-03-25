@@ -36,5 +36,7 @@ export class ApiNavigationTitleComponent {
   @Input()
   public apiOrigin: string;
   @Input()
+  public mcpEnabled: boolean = false;
+  @Input()
   public separator: 'pipe' | 'border' = 'border';
 }

@@ -66,6 +66,7 @@ export class ApiGeneralInfoDangerZoneComponent implements OnChanges, OnDestroy, 
     canChangeVisibilityToPrivate: false,
     canDeprecate: false,
     canDelete: false,
+    canActivateMcp: false,
   };
   public isReadOnly = false;
   public license$: Observable<License>;
@@ -121,6 +122,7 @@ export class ApiGeneralInfoDangerZoneComponent implements OnChanges, OnDestroy, 
         canChangeVisibilityToPrivate: this.api.lifecycleState !== 'DEPRECATED' && this.api.visibility === 'PUBLIC',
         canDeprecate: this.api.lifecycleState !== 'DEPRECATED' && this.api.definitionVersion !== 'FEDERATED',
         canDelete: !(this.api.state === 'STARTED' || this.api.lifecycleState === 'PUBLISHED'),
+        canActivateMcp: this.api.lifecycleState !== 'DEPRECATED' && this.api.definitionVersion === 'V4' && this.api.type === "PROXY" && !this.api.mcp?.enabled,
       };
     }
   }
@@ -152,6 +154,41 @@ export class ApiGeneralInfoDangerZoneComponent implements OnChanges, OnDestroy, 
         }),
         tap(() => this.reloadDetails.emit()),
         map(() => this.snackBarService.success(`Review has been asked.`)),
+        takeUntil(this.unsubscribe$),
+      )
+      .subscribe();
+  }
+
+  enableMCP() {
+    this.matDialog
+      .open<GioConfirmDialogComponent, GioConfirmDialogData>(GioConfirmDialogComponent, {
+        width: '500px',
+        data: {
+          title: 'Enable MCP',
+          content: `Are you sure you want to enable MCP for the API?`,
+          confirmButton: 'Enable',
+        },
+        role: 'alertdialog',
+        id: 'enableApiDialog',
+      })
+      .afterClosed()
+      .pipe(
+        filter((confirm) => confirm === true),
+        switchMap(() => this.apiService.get(this.api.id)),
+        switchMap((api) => {
+          if (api.definitionVersion === 'V4') {
+            const apiToUpdate: UpdateApi = { ...api, mcp: {enabled: true, tools: []} };
+            return this.apiService.update(this.api.id, apiToUpdate);
+          } else {
+            return EMPTY;
+          }
+        }),
+        catchError(({ error }) => {
+          this.snackBarService.error(error.message);
+          return EMPTY;
+        }),
+        tap(() => this.reloadDetails.emit()),
+        map(() => this.snackBarService.success(`MCP has been activated for the API successfully.`)),
         takeUntil(this.unsubscribe$),
       )
       .subscribe();
