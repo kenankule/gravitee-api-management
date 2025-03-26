@@ -34,6 +34,7 @@ interface ApiVM {
   version: string;
   content: string;
   picture?: string;
+  mcpEnabled: boolean;
 }
 
 interface ApiPaginatorVM {
@@ -108,6 +109,7 @@ export class ApisListComponent {
               version: api.version,
               title: api.name,
               picture: api._links?.picture,
+              mcpEnabled: !!api.mcp?.enabled,
             }))
           : [];
 
