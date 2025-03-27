@@ -3736,9 +3736,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@gravitee/ui-particles-angular@npm:13.12.0":
-  version: 13.12.0
-  resolution: "@gravitee/ui-particles-angular@npm:13.12.0"
+"@gravitee/ui-particles-angular@npm:13.8.0-squad-1-mcp-server-6d9842d":
+  version: 13.8.0-squad-1-mcp-server-6d9842d
+  resolution: "@gravitee/ui-particles-angular@npm:13.8.0-squad-1-mcp-server-6d9842d"
   dependencies:
     "@fontsource/fira-mono": "npm:4.5.0"
     "@fontsource/golos-ui": "npm:^4.5.1"
@@ -3766,13 +3766,13 @@ __metadata:
       optional: true
     prismjs:
       optional: true
-  checksum: 10c0/221117de4040a621958b8056f45ad4c70441b819c261be49155d5616d24c03cbf0ad11605546c1fcb612cb0501187a76a0f05658000c010b18bc804a044eeb9a
+  checksum: 10c0/1882ea55149e8570351cf0a78efa5333ae392d9dc8ced1d2589c960d679137f0c60daa8e9b262d5aae4856db916dd5551a4dc28d6d8bf7d4e18caab4fdee829a
   languageName: node
   linkType: hard
 
-"@gravitee/ui-policy-studio-angular@npm:13.12.0":
-  version: 13.12.0
-  resolution: "@gravitee/ui-policy-studio-angular@npm:13.12.0"
+"@gravitee/ui-policy-studio-angular@npm:13.8.0-squad-1-mcp-server-6d9842d":
+  version: 13.8.0-squad-1-mcp-server-6d9842d
+  resolution: "@gravitee/ui-policy-studio-angular@npm:13.8.0-squad-1-mcp-server-6d9842d"
   dependencies:
     tslib: "npm:^2.6.2"
   peerDependencies:
@@ -3784,7 +3784,7 @@ __metadata:
     "@angular/material": ^18.0.0
     "@gravitee/ui-particles-angular": "*"
     lodash: ^4.17.21
-  checksum: 10c0/9a037e5c33bf1f368c1c6e436fb158af99f45527a0e9934b04d39faf4608274c8f793683d7a0625f06a3ea4e34df2da9368541dfac4a9ede4992b46a60d523f1
+  checksum: 10c0/46b94b320387089822f576f9028945dc2037c7e8a6c09f2241591d3a80cf375e03431c8d1742ece34d851a6af1fa85c8978fd3d93b3c9a4dd0f77a61889ae9e2
   languageName: node
   linkType: hard
 
@@ -12737,8 +12737,8 @@ __metadata:
     "@fontsource/libre-franklin": "npm:4.5.11"
     "@gravitee/ui-analytics": "npm:13.12.0"
     "@gravitee/ui-components": "npm:4.3.0"
-    "@gravitee/ui-particles-angular": "npm:13.12.0"
-    "@gravitee/ui-policy-studio-angular": "npm:13.12.0"
+    "@gravitee/ui-particles-angular": "npm:13.8.0-squad-1-mcp-server-6d9842d"
+    "@gravitee/ui-policy-studio-angular": "npm:13.8.0-squad-1-mcp-server-6d9842d"
     "@gravitee/ui-schematics": "npm:13.12.0"
     "@highcharts/map-collection": "npm:1.1.4"
     "@ngx-formly/core": "npm:6.3.12"
