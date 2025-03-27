@@ -26,6 +26,7 @@ import { Api } from '../../../../entities/api/api';
 import { Application } from '../../../../entities/application/application';
 import { Plan } from '../../../../entities/plan/plan';
 import { Subscription } from '../../../../entities/subscription/subscription';
+import {McpUseWithClaudeComponent} from "../../../../components/mcp-use-with-claude/mcp-use-with-claude.component";
 
 @Component({
   selector: 'app-subscribe-to-api-checkout',
@@ -39,6 +40,7 @@ import { Subscription } from '../../../../entities/subscription/subscription';
     MatLabel,
     MatRadioGroup,
     RadioCardComponent,
+    McpUseWithClaudeComponent,
   ],
   templateUrl: './subscribe-to-api-checkout.component.html',
   styleUrl: './subscribe-to-api-checkout.component.scss',
