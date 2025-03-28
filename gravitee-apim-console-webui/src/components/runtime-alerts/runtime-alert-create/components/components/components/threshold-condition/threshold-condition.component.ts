@@ -13,10 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from "@angular/core";
 import { FormGroup } from '@angular/forms';
 
-import { AggregationCondition } from '../../../../../../../entities/alert';
+import { AggregationCondition, ConditionType } from "../../../../../../../entities/alert";
+import { AlertTriggerEntity } from "../../../../../../../entities/alerts/alertTriggerEntity";
+import {
+  RateCondition,
+  ThresholdCondition
+} from "../../../../../../../entities/alerts/conditions";
 
 @Component({
   selector: 'threshold-condition',
@@ -51,8 +56,24 @@ import { AggregationCondition } from '../../../../../../../entities/alert';
     </form>
   `,
 })
-export class ThresholdConditionComponent {
+export class ThresholdConditionComponent implements OnInit {
   @Input({ required: true }) form: FormGroup;
   @Input() thresholdType: 'number' | 'percentage' = 'number';
+  @Input() alertToUpdate: AlertTriggerEntity;
+  @Input() isComparison: boolean = false;
   protected operators = AggregationCondition.OPERATORS;
+
+  ngOnInit() {
+    if(this.alertToUpdate) {
+      const alertToUpdateCondition = this.alertToUpdate.conditions[0] as ThresholdCondition | RateCondition;
+
+      if(alertToUpdateCondition.type === ConditionType.RATE && this.isComparison) {
+        this.form.controls.operator.setValue(this.operators.find(o => o.key === alertToUpdateCondition.comparison.operator))
+        this.form.controls.threshold.setValue(alertToUpdateCondition.comparison.threshold);
+      } else {
+        this.form.controls.operator.setValue(this.operators.find(o => o.key === alertToUpdateCondition.operator))
+        this.form.controls.threshold.setValue(alertToUpdateCondition.threshold);
+      }
+    }
+  }
 }

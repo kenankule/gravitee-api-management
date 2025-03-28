@@ -53,10 +53,13 @@
         ></runtime-alert-create-general>
       }
 
-      <runtime-alert-create-timeframe
-        formControlName="timeframeForm">
-      </runtime-alert-create-timeframe>
-
+      @if(!isLoading) {
+        <runtime-alert-create-timeframe
+          [form]="alertForm.controls.timeframeForm"
+          [alertToUpdate]="alertToUpdate"
+        >
+        </runtime-alert-create-timeframe>
+      }
         <runtime-alert-create-conditions
           *ngIf="referenceType != null"
           [rule]="selectedRule"

@@ -194,3 +194,13 @@ const toNotificationPeriod = (timeframeFormValues): NotificationPeriod => {
     endHour,
   };
 };
+
+export const fromBeginAndEndHourToRange = (beginHour: number, endHour: number) => {
+  const midnight = moment().startOf('day');
+  return [
+    midnight.clone().add(beginHour, 'seconds'),
+    midnight.clone().add(endHour, 'seconds'),
+  ];
+}
+
+

@@ -79,7 +79,9 @@ export class RuntimeAlertCreateComponent implements OnInit, OnDestroy {
           severity: this.formBuilder.control<AlertSeverity>('INFO', [Validators.required, Validators.max(256)]),
           description: this.formBuilder.control<string>(null),
       }),
-      timeframeForm: [],
+      timeframeForm: this.formBuilder.group({
+        timeframes: this.formBuilder.array([])
+      }),
       conditionsForm: this.formBuilder.group({}),
       filtersForm: [],
       notificationsForm: this.formBuilder.array([]),
@@ -99,13 +101,15 @@ export class RuntimeAlertCreateComponent implements OnInit, OnDestroy {
       this.alertService.getAlert(this.activatedRoute.snapshot.params.apiId, this.alertId)
         .subscribe({
           next: (alert) => {
-            console.log('-1. alert: ', alert);
             this.alertToUpdate = alert;
             this.changeDetectorRef.detectChanges();
             this.isLoading = false;
           }
         })
+    } else {
+      this.isLoading = false;
     }
+
   }
 
   ngOnDestroy() {
@@ -115,7 +119,7 @@ export class RuntimeAlertCreateComponent implements OnInit, OnDestroy {
 
   save() {
     if(this.isUpdate) {
-
+      console.log('update alertID: ', this.alertId);
     } else {
       return this.alertService
         .createAlert(this.referenceId, toNewAlertTriggerEntity(this.referenceId, Scope[this.referenceType], this.alertForm.getRawValue()))
@@ -131,8 +135,6 @@ export class RuntimeAlertCreateComponent implements OnInit, OnDestroy {
         )
         .subscribe(() => this.router.navigate(['..'], { relativeTo: this.activatedRoute }));
     }
-
-
   }
 
   show() {

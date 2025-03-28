@@ -13,14 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Component, DestroyRef, forwardRef } from "@angular/core";
+import { Component, DestroyRef, Input, OnInit } from "@angular/core";
 import {
-  AbstractControl,
-  ControlValueAccessor, FormArray, FormBuilder,
+  AbstractControl, FormArray, FormBuilder,
   FormControl,
   FormGroup,
-  NG_VALIDATORS,
-  NG_VALUE_ACCESSOR,
   ValidationErrors,
   Validator
 } from "@angular/forms";
@@ -30,6 +27,8 @@ import { tap } from "rxjs/operators";
 import { isEqual } from "lodash";
 
 import { Days } from "../../../../../entities/alerts/notificationPeriod";
+import { AlertTriggerEntity } from "../../../../../entities/alerts/alertTriggerEntity";
+import { fromBeginAndEndHourToRange } from "../../runtime-alert-create.adapter";
 
 export type TimeframeFormValue = {
   days: string[];
@@ -50,45 +49,25 @@ export interface TimeframeControlInterface {
   templateUrl: "./runtime-alert-create-timeframe.component.html",
   styleUrls: ["./runtime-alert-create-timeframe.component.scss"],
   standalone: false,
-  providers: [
-    {
-      provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => RuntimeAlertCreateTimeframeComponent),
-      multi: true
-    },
-    {
-      provide: NG_VALIDATORS,
-      useExisting: forwardRef(() => RuntimeAlertCreateTimeframeComponent),
-      multi: true
-    }
-  ]
 })
-export class RuntimeAlertCreateTimeframeComponent implements ControlValueAccessor, Validator {
-  private officeHours = [moment("09:00", "HH:mm"), moment("18:00", "HH:mm")];
-  private _onChange: (value: TimeframeFormValue) => void = () => ({});
-  private _onTouched: () => void = () => ({});
+export class RuntimeAlertCreateTimeframeComponent implements Validator, OnInit {
+  @Input() public alertToUpdate: AlertTriggerEntity;
+  @Input() public form;
 
-  protected form: FormGroup;
+  private officeHours = [moment("09:00", "HH:mm"), moment("18:00", "HH:mm")];
+
   protected days = Days.getAllDayNames();
   protected businessDay = Days.getBusinessDays();
 
   constructor(
     private readonly formBuilder: FormBuilder,
     private readonly destroyRef: DestroyRef,
-  ) {
-    this.form = this.formBuilder.group({
-      timeframes: this.formBuilder.array([])
-    });
+  ) {}
 
-    this.form.valueChanges
-      .pipe(
-        tap((value) => {
-          this._onChange(value);
-          this._onTouched();
-        }),
-        takeUntilDestroyed(this.destroyRef)
-      )
-      .subscribe();
+  ngOnInit(): void {
+    if (this.alertToUpdate) {
+      this.seedData();
+    }
   }
 
   get timeframesControl(): FormArray {
@@ -107,6 +86,30 @@ export class RuntimeAlertCreateTimeframeComponent implements ControlValueAccesso
     this.timeframesControl.push(timeframeControl);
   }
 
+  public seedData () {
+    if(this.alertToUpdate.notificationPeriods.length === 0) {
+      return;
+    }
+    this.alertToUpdate.notificationPeriods.forEach((timeframe) => {
+      const days = timeframe.days.map((dayNumber) => Days.numberToDay(dayNumber));
+      const areBusinessDays: boolean = isEqual(days, this.businessDay);
+      const timeRange = fromBeginAndEndHourToRange(timeframe.beginHour, timeframe.endHour);
+      const areOfficeHours = this.isOfficeHours(timeRange);
+
+      const timeframeControl: FormGroup<TimeframeControlInterface> = this.formBuilder.group({
+        days: new FormControl<string[]>(days),
+        timeRange: new FormControl<moment.Moment[]>(timeRange),
+        businessDays: new FormControl<boolean>(areBusinessDays),
+        officeHours: new FormControl<boolean>(areOfficeHours)
+      });
+      this.syncDaysFormFields(timeframeControl);
+      this.syncTimeRangeFormFields(timeframeControl);
+      this.timeframesControl.push(timeframeControl);
+    });
+  }
+
+
+
   public deleteTimeframe(index: number) {
     this.timeframesControl.removeAt(index);
   }
@@ -119,14 +122,6 @@ export class RuntimeAlertCreateTimeframeComponent implements ControlValueAccesso
     if (value) {
       this.form.setValue(value, { emitEvent: false });
     }
-  }
-
-  registerOnChange(fn: (value: TimeframeFormValue) => void): void {
-    this._onChange = fn;
-  }
-
-  registerOnTouched(fn: () => void): void {
-    this._onTouched = fn;
   }
 
   setDisabledState(isDisabled: boolean): void {

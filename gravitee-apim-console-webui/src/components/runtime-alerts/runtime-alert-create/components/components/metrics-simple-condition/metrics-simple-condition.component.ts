@@ -20,14 +20,14 @@ import { Subject } from "rxjs";
 
 import { OPTIONAL_CONTROLS_NAMES, SimpleMetricsForm } from "./metrics-simple-condition.models";
 
-import { Conditions, ConditionType, Metrics, Operator, Scope, Tuple } from "../../../../../../entities/alert";
+import { Conditions, ConditionType, Metrics, Scope } from "../../../../../../entities/alert";
 import { AlertTriggerEntity } from "../../../../../../entities/alerts/alertTriggerEntity";
 import {
-  CompareCondition, StringCondition,
+  AlertCondition,
+  CompareCondition, RateCondition, StringCondition,
   ThresholdCondition,
   ThresholdRangeCondition
 } from "../../../../../../entities/alerts/conditions";
-import { ApiMetrics } from "../../../../../../entities/alerts/api.metrics";
 
 @Component({
   selector: "metrics-simple-condition",
@@ -42,22 +42,17 @@ export class MetricsSimpleConditionComponent implements OnInit, OnDestroy {
   @Input({ required: true }) metrics: Metrics[];
   @Input({ required: true }) referenceId: string;
   @Input({ required: true }) referenceType: Scope;
-
   @Input() public alertToUpdate: AlertTriggerEntity;
-  public isUpdate = true;
 
   protected types: string[];
   protected conditionType = ConditionType;
   protected metric: Metrics;
 
-  public operators: Operator[];
-
 
   ngOnInit() {
-    this.types = this.metrics.find((metric) => metric.key === this.metrics[0].key).conditions;
+    this.types = this.metrics.find((metric) => metric.key === this.metrics[0]?.key).conditions;
 
     if (this.alertToUpdate) {
-      // this.metric = this.metrics[0];
       this.seedControls();
     }
 
@@ -78,7 +73,7 @@ export class MetricsSimpleConditionComponent implements OnInit, OnDestroy {
             this.metric = value;
             this.form.controls.type.enable();
             this.form.controls.type.reset();
-            this.types = this.metrics.find((metric) => metric.key === value.key)?.conditions;
+            this.types = this.metrics.find((metric) => metric.key === value?.key)?.conditions;
             this.removeControls(OPTIONAL_CONTROLS_NAMES);
           }
         }),
@@ -118,40 +113,74 @@ export class MetricsSimpleConditionComponent implements OnInit, OnDestroy {
   }
 
   private seedControls() {
-    const alertToUpdateCondition = this.alertToUpdate.conditions[0] as ThresholdCondition | ThresholdRangeCondition | CompareCondition | StringCondition;
+    const alertToUpdateCondition = this.alertToUpdate.conditions[0] as ThresholdCondition | ThresholdRangeCondition | CompareCondition | StringCondition | RateCondition;
+    this.setMetricControl(alertToUpdateCondition);
+    this.setTypeControl(alertToUpdateCondition);
 
-    if (ConditionType.THRESHOLD === alertToUpdateCondition.type) {
-      this.form.addControl("operator", new FormControl("", Validators.required));
-      this.form.addControl("threshold", new FormControl(null, [Validators.required, Validators.min(1)]));
-    } else if (ConditionType.THRESHOLD_RANGE === alertToUpdateCondition.type) {
-      this.form.addControl("lowThreshold", new FormControl(null, Validators.required));
-      this.form.addControl("highThreshold", new FormControl(null, [Validators.required, this.validateHighThreshold()]));
-    } else if (ConditionType.COMPARE === alertToUpdateCondition.type) {
+    if (alertToUpdateCondition.type === ConditionType.THRESHOLD) {
       this.form.addControl("operator", new FormControl(null, Validators.required));
-      this.form.addControl("multiplier", new FormControl(null, [Validators.required, Validators.min(1)]));
+      this.form.addControl("threshold", new FormControl(null, [Validators.required, Validators.min(1)]));
+    } else if (alertToUpdateCondition.type === ConditionType.THRESHOLD_RANGE) {
+      this.form.addControl("lowThreshold", new FormControl(alertToUpdateCondition.thresholdLow, Validators.required));
+      this.form.addControl("highThreshold", new FormControl(alertToUpdateCondition.thresholdHigh, [Validators.required, this.validateHighThreshold()]));
+    } else if (alertToUpdateCondition.type === ConditionType.COMPARE) {
+      this.setOperatorControl(alertToUpdateCondition);
+      this.form.addControl("multiplier", new FormControl(alertToUpdateCondition.multiplier, [Validators.required, Validators.min(1)]));
       this.form.addControl("property", new FormControl(null, [Validators.required]));
-    } else if (ConditionType.STRING === alertToUpdateCondition.type) {
+    } else if (alertToUpdateCondition.type === ConditionType.STRING) {
+      this.setOperatorControl(alertToUpdateCondition);
+      this.form.addControl("pattern", new FormControl(null, Validators.required));
+    } else if(alertToUpdateCondition.type === ConditionType.RATE) {
+      if(alertToUpdateCondition.comparison.type === ConditionType.THRESHOLD) {
+        this.form.addControl("operator", new FormControl(null, Validators.required));
+        this.form.addControl("threshold", new FormControl(null, [Validators.required, Validators.min(1)]));
+        return;
+      } else if (alertToUpdateCondition.comparison.type === ConditionType.THRESHOLD_RANGE) {
+        this.form.addControl("lowThreshold", new FormControl(alertToUpdateCondition.comparison.thresholdLow, Validators.required));
+        this.form.addControl("highThreshold", new FormControl(alertToUpdateCondition.comparison.thresholdHigh, [Validators.required, this.validateHighThreshold()]));
+      } else if (alertToUpdateCondition.comparison.type === ConditionType.COMPARE) {
+        this.form.addControl("operator", new FormControl(null, Validators.required));
+        this.form.addControl("multiplier", new FormControl(null, [Validators.required, Validators.min(1)]));
+        this.form.addControl("property", new FormControl(null, [Validators.required]));
+      } else if(alertToUpdateCondition.comparison.type === ConditionType.STRING) {
+        const condition = Conditions.findByType(alertToUpdateCondition.comparison.type);
+        const operator = condition.getOperators().find(o => o?.key === alertToUpdateCondition.comparison.operator);
+        this.form.addControl("operator", new FormControl(operator, Validators.required));
+        this.form.addControl("pattern", new FormControl(null, Validators.required)); // ???
+      }
+    }
+  }
 
+  private setMetricControl (alertToUpdateCondition: AlertCondition) {
+    if('property' in alertToUpdateCondition) {
+      this.metric = this.metrics.find((metric ) => metric?.key === alertToUpdateCondition.property);
+    }
 
-      this.metric = this.metrics.find((metric ) => metric.key === alertToUpdateCondition.property);
-      console.log("1. alertToUpdateCondition:: ", alertToUpdateCondition);
-      this.form.controls.metric.setValue(this.metric);
-      this.types = this.metrics.find((m) => m.key === this.metric.key)?.conditions;
+    if('comparison' in alertToUpdateCondition) {
+      this.metric = this.metrics.find((metric ) => metric.key === alertToUpdateCondition.comparison.property);
+    }
+
+    this.form.controls.metric.setValue(this.metric);
+  }
+
+  private setTypeControl (alertToUpdateCondition: AlertCondition) {
+    this.types = this.metrics.find((m) => m?.key === this.metric?.key)?.conditions;
+
+    if ('comparison' in alertToUpdateCondition) {
+      const type = this.types.find(t => t === alertToUpdateCondition.comparison.type)
+      this.form.controls.type.setValue(type);
+      this.form.controls.type.enable();
+    } else {
       this.form.controls.type.setValue(alertToUpdateCondition.type);
       this.form.controls.type.enable();
+    }
+  }
 
-
-
+  private setOperatorControl (alertToUpdateCondition: AlertCondition) {
+    if('operator' in alertToUpdateCondition) {
       const condition = Conditions.findByType(alertToUpdateCondition.type);
-      if (condition !== undefined) {
-        this.operators = condition.getOperators();
-      }
-      const operator = this.operators.find(o => o.key === alertToUpdateCondition.operator);
-
-      this.form.addControl("operator", new FormControl<Operator>(operator, Validators.required));
-
-
-      this.form.addControl("pattern", new FormControl(Validators.required));
+      const operator = condition.getOperators().find(o => o?.key === alertToUpdateCondition.operator);
+      this.form.addControl("operator", new FormControl(operator, Validators.required));
     }
   }
 

@@ -47,6 +47,7 @@ export interface AlertTriggerEntity {
   severity: AlertSeverity;
   enabled: boolean;
   conditions?: AlertCondition[];
+  notificationPeriods?: NotificationPeriod[];
 }
 
 export interface NewAlertTriggerEntity extends Trigger {

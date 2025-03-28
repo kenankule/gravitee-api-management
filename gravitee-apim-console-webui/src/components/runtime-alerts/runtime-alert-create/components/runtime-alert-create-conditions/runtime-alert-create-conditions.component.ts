@@ -28,12 +28,6 @@ import {
 import { Rule } from "../../../../../entities/alerts/rule.metrics";
 import { AlertTriggerEntity } from "../../../../../entities/alerts/alertTriggerEntity";
 
-import {
-  CompareCondition, StringCompareCondition, StringCondition,
-  ThresholdCondition,
-  ThresholdRangeCondition
-} from "../../../../../entities/alerts/conditions";
-import { ApiMetrics } from "../../../../../entities/alerts/api.metrics";
 
 @Component({
   standalone: false,
@@ -43,13 +37,6 @@ import { ApiMetrics } from "../../../../../entities/alerts/api.metrics";
   viewProviders: [{ provide: ControlContainer, useExisting: FormGroupDirective }]
 })
 export class RuntimeAlertCreateConditionsComponent implements OnInit, OnChanges {
-  // @Input({ required: true }) set rule(value: Rule) {
-  //   if (value) {
-  //     this.ruleType = `${value.source}@${value.type}`;
-  //     this.conditionsForm = RuntimeAlertCreateConditionsFactory.create(this.ruleType);
-  //     this.metrics = Metrics.filterByScope(Rule.findByScopeAndType(this.referenceType, this.ruleType)?.metrics ?? [], this.referenceType);
-  //   }
-  // }
   @Input() public referenceType: Scope;
   @Input() public referenceId: string;
   @Input() public rule: Rule;
@@ -80,6 +67,7 @@ export class RuntimeAlertCreateConditionsComponent implements OnInit, OnChanges 
 
   createForm(rule: string) {
     this.resetForm();
+    console.log('0. Start here:', rule);
 
     if (rule.endsWith("@MISSING_DATA")) {
       this.conditionsForm.addControl("duration", new FormControl<number>(null, [Validators.required, Validators.min(1)]));
@@ -105,7 +93,7 @@ export class RuntimeAlertCreateConditionsComponent implements OnInit, OnChanges 
         this.conditionsForm.addControl("threshold", new FormControl<number>(null, [Validators.required]));
         this.conditionsForm.addControl("duration", new FormControl<number>(null, [Validators.required, Validators.min(1)]));
         this.conditionsForm.addControl("timeUnit", new FormControl<string>(null, [Validators.required]));
-        this.conditionsForm.addControl("projections", new FormGroup({ property: new FormControl<string>(null) }));
+        this.conditionsForm.addControl("projections", new FormGroup({ property: new FormControl(null) }));
         break;
 
       case "REQUEST@METRICS_RATE":
@@ -113,7 +101,7 @@ export class RuntimeAlertCreateConditionsComponent implements OnInit, OnChanges 
           metric: new FormControl<Metrics>(null, [Validators.required]),
           type: new FormControl<string>({ value: null, disabled: true }, [Validators.required])
         }));
-        this.conditionsForm.addControl("type", new FormControl<string>("RATE", [Validators.required]));
+        this.conditionsForm.addControl("type", new FormControl<string>(null, [Validators.required]));
         this.conditionsForm.addControl("operator", new FormControl(null, [Validators.required]));
         this.conditionsForm.addControl("threshold", new FormControl<number>(null, [Validators.required]));
         this.conditionsForm.addControl("duration", new FormControl<number>(null, [Validators.required, Validators.min(1), Validators.max(100)]));

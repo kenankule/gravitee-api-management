@@ -17,6 +17,8 @@ import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 
 import { AggregationCondition, Conditions, ConditionType, Metrics } from '../../../../../../../entities/alert';
+import { AlertTriggerEntity } from "../../../../../../../entities/alerts/alertTriggerEntity";
+import { CompareCondition, RateCondition } from "../../../../../../../entities/alerts/conditions";
 
 @Component({
   selector: 'compare-condition',
@@ -50,10 +52,16 @@ import { AggregationCondition, Conditions, ConditionType, Metrics } from '../../
 export class CompareConditionComponent implements OnInit {
   @Input({ required: true }) form: FormGroup;
   @Input({ required: true }) metrics: Metrics[];
+
+  @Input() public alertToUpdate: AlertTriggerEntity;
+  @Input() isComparison: boolean = false;
+
   protected operators = AggregationCondition.OPERATORS;
   protected properties: Metrics[];
 
+
   ngOnInit() {
+
     const condition = Conditions.findByType(this.form.controls.type.value);
     if (condition !== undefined) {
       this.operators = condition.getOperators();
@@ -62,5 +70,22 @@ export class CompareConditionComponent implements OnInit {
     this.properties = this.metrics.filter(
       (metric) => metric.conditions.includes(ConditionType.COMPARE) && metric.key !== this.form.controls.metric.value.key,
     );
+
+    if(this.alertToUpdate) {
+      const alertToUpdateCondition = this.alertToUpdate.conditions[0] as CompareCondition | RateCondition;
+      if(alertToUpdateCondition.type === ConditionType.RATE && this.isComparison) {
+        const property = this.properties.find(p => p.key === alertToUpdateCondition.comparison.property2);
+        const operator = this.operators.find(p => p.key === alertToUpdateCondition.comparison.operator);
+
+        this.form.controls.operator.setValue(operator);
+        this.form.controls.multiplier.setValue(alertToUpdateCondition.comparison.multiplier);
+        this.form.controls.property.setValue(property);
+      } else {
+        if('property2' in alertToUpdateCondition) {
+          const property = this.properties.find(p => p.key === alertToUpdateCondition.property2)
+          this.form.controls.property.setValue(property);
+        }
+      }
+    }
   }
 }
