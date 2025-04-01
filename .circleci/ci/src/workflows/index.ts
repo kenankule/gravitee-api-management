@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 export * from './workflow-bridge-compatibility-tests';
+export * from './workflow-build-rpm';
 export * from './workflow-build-rpm-and-docker-images';
 export * from './workflow-full-release';
 export * from './workflow-repositories-tests';

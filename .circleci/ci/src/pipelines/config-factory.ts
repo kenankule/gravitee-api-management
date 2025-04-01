@@ -26,6 +26,7 @@ export function initDynamicConfig(): Config {
     'package_bundle',
     'nexus_staging',
     'pull_requests',
+    'build_rpm',
     'build_rpm_&_docker_images',
     'release_notes_apim',
     'bridge_compatibility_tests',

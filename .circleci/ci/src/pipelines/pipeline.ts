@@ -23,6 +23,7 @@ import { generateRepositoriesTestsConfig } from './pipeline-repositories-tests';
 import { generateReleaseNotesApimConfig } from './pipeline-release-notes-apim';
 import { generateReleaseHelmConfig } from './pipeline-release-helm';
 import { generateReleaseConfig } from './pipeline-release';
+import { generateBuildRpmConfig } from './pipeline-build-rpm';
 import { generateBuildRpmAndDockerImagesConfig } from './pipeline-build-rpm-and-docker-images';
 import { generatePullRequestsConfig } from './pipeline-pull-requests';
 import { generateFullReleaseConfig } from './pipeline-full-release';
@@ -33,6 +34,8 @@ export function buildCIPipeline(environment: CircleCIEnvironment): Config | null
   switch (environment.action) {
     case 'pull_requests':
       return generatePullRequestsConfig(environment);
+    case 'build_rpm':
+      return generateBuildRpmConfig(environment);
     case 'build_rpm_&_docker_images':
       return generateBuildRpmAndDockerImagesConfig(environment);
     case 'release_helm':
