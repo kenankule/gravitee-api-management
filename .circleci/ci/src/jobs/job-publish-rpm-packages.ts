@@ -76,6 +76,14 @@ git clone --depth 1 --branch master --single-branch --no-tag git@github.com:grav
 cd \${GIT_GRAVITEE_PACKAGES_REPO}/apim/4.x
 ./build.sh -v ${environment.graviteeioVersion}
 
+echo "change RPM file owner from root to graviteeio"
+docker run --rm \\
+    -v "\${PWD}:/rpms" \\
+    --workdir /rpms \\
+    --entrypoint /bin/sh \\
+    graviteeio/fpm:rpm \\
+    -c 'chown 1001:1001 *.rpm'
+
 docker run --rm \\
     -v "\${PWD}:/rpms" \\
     -e "GPG_KEY_NAME" \\

@@ -20,9 +20,6 @@ import { config } from '../config';
 
 export class BuildRpmWorkflow {
   static create(dynamicConfig: Config, environment: CircleCIEnvironment) {
-    const setupJob = SetupJob.create(dynamicConfig);
-    dynamicConfig.addJob(setupJob);
-
     const publishRpmPackagesJob = PublishRpmPackagesJob.create(dynamicConfig, environment);
     dynamicConfig.addJob(publishRpmPackagesJob);
 
@@ -33,7 +30,6 @@ export class BuildRpmWorkflow {
     }
 
     const jobs = [
-      new workflow.WorkflowJob(setupJob, { context: config.jobContext, name: 'Setup' }),
       new workflow.WorkflowJob(publishRpmPackagesJob, {
         context: config.jobContext,
         name: publishRpmPackagesJobName,
