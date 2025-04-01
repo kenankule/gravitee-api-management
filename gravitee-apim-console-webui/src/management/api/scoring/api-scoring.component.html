@@ -41,6 +41,12 @@
             ><mat-icon class="gio-left" svgIcon="gio:shield-check"></mat-icon> {{ apiScoring.summary.score * 100 | number: '1.0-0' }}%
           </span>
         }
+<<<<<<< HEAD
+=======
+        @if (evaluationErrors.length > 0) {
+          <span class="gio-badge-error"><mat-icon svgIcon="gio:shield-alert"></mat-icon></span>
+        }
+>>>>>>> 29a640751e (refactor(console): remove "this" from html templates)
 
         <!-- Uncomment when BE ready -->
         <!-- <span class="gio-badge-success"><mat-icon class="gio-left" svgIcon="gio:trending-up"></mat-icon>+0.7</span>-->

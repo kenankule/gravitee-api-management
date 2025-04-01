@@ -52,6 +52,7 @@
       </mat-card-content>
     </mat-card>
   </div>
+<<<<<<< HEAD
 
   <h2 class="home-overview__row-title">V2 APIs</h2>
   <div class="home-overview__row-cards">
@@ -80,6 +81,14 @@
         </ng-container>
       </mat-card-content>
     </mat-card>
+=======
+  <div class="row">
+    <div class="row-cards">
+      <api-analytics-response-status-ranges title="API Response Status" [responseStatusRanges]="v4ApiAnalyticsResponseStatusRanges" />
+      <app-top-apis-widget [data]="topApis" [period]="timeRangeParams" />
+      <top-failed-apis></top-failed-apis>
+    </div>
+>>>>>>> 29a640751e (refactor(console): remove "this" from html templates)
   </div>
 
   <!--   V4 data overview row -->
