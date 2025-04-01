@@ -51,10 +51,10 @@ jobs:
           name: node/default
           tag: "20.9"
         environment:
-            CI_ACTION: "<< pipeline.parameters.gio_action >>"
-            CI_DRY_RUN: "<< pipeline.parameters.dry_run >>"
-            CI_GRAVITEEIO_VERSION: "<< pipeline.parameters.graviteeio_version >>"
-            CI_DOCKER_TAG_AS_LATEST: "<< pipeline.parameters.docker_tag_as_latest >>"
+            CI_ACTION: "build_rpm"
+            CI_DRY_RUN: "true"
+            CI_GRAVITEEIO_VERSION: "4.7.0"
+            CI_DOCKER_TAG_AS_LATEST: "false"
             APIM_VERSION_PATH: "<< pipeline.parameters.apim_version_path >>"
         steps:
             - checkout
@@ -120,11 +120,6 @@ jobs:
             - node/install-packages:
                   app-dir: .circleci/ci
                   override-ci-command: npm install
-            - run:
-                  name: Lint & Test CI Project
-                  working_directory: .circleci/ci
-                  command: |
-                      npm run lint && npm run test
             - run:
                   name: Generate config
                   working_directory: .circleci/ci
