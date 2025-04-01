@@ -4,6 +4,7 @@
   "license": "Apache-2.0",
   "description": "Gravitee.io APIM - UI Console",
   "dependencies": {
+<<<<<<< HEAD
     "@angular/animations": "18.2.0",
     "@angular/cdk": "18.2.0",
     "@angular/common": "18.2.0",
@@ -25,6 +26,29 @@
     "@gravitee/ui-components": "4.2.6",
     "@gravitee/ui-particles-angular": "13.12.0",
     "@gravitee/ui-policy-studio-angular": "13.12.0",
+=======
+    "@angular/animations": "19.2.4",
+    "@angular/cdk": "19.2.4",
+    "@angular/common": "19.2.4",
+    "@angular/compiler": "19.2.4",
+    "@angular/core": "19.2.4",
+    "@angular/forms": "19.2.4",
+    "@angular/material": "19.2.4",
+    "@angular/material-moment-adapter": "19.2.4",
+    "@angular/platform-browser": "19.2.4",
+    "@angular/platform-browser-dynamic": "19.2.4",
+    "@angular/router": "19.2.4",
+    "@angular/upgrade": "19.2.4",
+    "@asciidoctor/core": "3.0.4",
+    "@asyncapi/web-component": "2.6.3",
+    "@danielmoncada/angular-datetime-picker": "19.0.0",
+    "@danielmoncada/angular-datetime-picker-moment-adapter": "6.0.2",
+    "@fontsource/libre-franklin": "4.5.11",
+    "@gravitee/ui-analytics": "14.0.0",
+    "@gravitee/ui-components": "4.3.0",
+    "@gravitee/ui-particles-angular": "14.0.0",
+    "@gravitee/ui-policy-studio-angular": "14.0.0",
+>>>>>>> a3693fa554 (chore(console): bump angular to 19)
     "@highcharts/map-collection": "1.1.4",
     "@ngx-formly/core": "6.3.0",
     "@ngx-formly/material": "6.3.0",
@@ -87,6 +111,7 @@
     "zone.js": "0.14.10"
   },
   "devDependencies": {
+<<<<<<< HEAD
     "@angular-devkit/architect": "0.1802.0",
     "@angular-devkit/build-angular": "18.2.0",
     "@angular/cli": "18.2.0",
@@ -94,6 +119,15 @@
     "@gravitee/ui-schematics": "13.12.0",
     "@storybook/addon-essentials": "7.6.17",
     "@storybook/angular": "7.6.17",
+=======
+    "@angular-devkit/architect": "0.1902.5",
+    "@angular-devkit/build-angular": "19.2.5",
+    "@angular/cli": "19.2.5",
+    "@angular/compiler-cli": "19.2.4",
+    "@gravitee/ui-schematics": "14.0.0",
+    "@storybook/addon-essentials": "8.6.11",
+    "@storybook/angular": "8.6.11",
+>>>>>>> a3693fa554 (chore(console): bump angular to 19)
     "@types/angular": "1.8.9",
     "@types/angular-material": "1.1.77",
     "@types/angular-mocks": "1.7.4",
