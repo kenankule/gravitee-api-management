@@ -18,11 +18,41 @@ import { UpgradeComponent } from '@angular/upgrade/static';
 import { ActivatedRoute } from '@angular/router';
 
 @Component({
+<<<<<<< HEAD
   template: '',
   selector: 'settings-groups',
   host: {
     class: 'bootstrap gv-sub-content',
   },
+=======
+  templateUrl: './groups.component.html',
+  selector: 'app-groups',
+  styleUrls: ['./groups.component.scss'],
+  imports: [
+    CommonModule,
+    MatCardModule,
+    MatTableModule,
+    MatIconModule,
+    MatButtonModule,
+    MatTooltipModule,
+    RouterModule,
+    FormsModule,
+    GioFormSlideToggleModule,
+    MatSlideToggleModule,
+    ReactiveFormsModule,
+    GioGoBackButtonModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    MatOptionModule,
+    MatCheckboxModule,
+    GioSaveBarModule,
+    GioPermissionModule,
+    MatTabsModule,
+    MatMenuModule,
+    GioTableWrapperModule,
+  ],
+>>>>>>> 2efa73dab5 (chore(console): remove explicit `standalone: true`)
 })
 export class GroupsComponent extends UpgradeComponent {
   constructor(

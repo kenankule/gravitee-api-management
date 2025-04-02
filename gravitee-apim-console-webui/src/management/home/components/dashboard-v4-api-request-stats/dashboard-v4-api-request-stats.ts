@@ -31,11 +31,18 @@ export type v4ApisRequestStats = {
 };
 
 @Component({
+<<<<<<< HEAD:gravitee-apim-console-webui/src/management/home/components/dashboard-v4-api-request-stats/dashboard-v4-api-request-stats.ts
   selector: 'dashboard-v4-api-request-stats',
   standalone: true,
   imports: [CommonModule, MatTooltip, DecimalPipe, GioShortNumberPipeModule, GioLoaderModule, MatCard, MatIcon],
   templateUrl: './dashboard-v4-api-request-stats.html',
   styleUrls: ['./dashboard-v4-api-request-stats.scss'],
+=======
+  selector: 'dashboard-api-request-stats',
+  imports: [CommonModule, MatTooltip, MatCard, MatIcon, DecimalPipe, GioShortNumberPipeModule, GioLoaderModule],
+  templateUrl: './dashboard-api-request-stats.component.html',
+  styleUrls: ['./dashboard-api-request-stats.component.scss'],
+>>>>>>> 2efa73dab5 (chore(console): remove explicit `standalone: true`):gravitee-apim-console-webui/src/management/home/components/dashboard-api-request-stats/dashboard-api-request-stats.component.ts
 })
 export class DashboardV4ApiRequestStats {
   @Input()

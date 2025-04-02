@@ -38,8 +38,12 @@ type FileExtension = (typeof allowedFileExtensions)[number];
       multi: true,
     },
   ],
+<<<<<<< HEAD
   standalone: true,
   imports: [GioFormFilePickerModule, MatIcon, FormsModule, MarkdownComponent, GioSwaggerUiModule, GioAsyncApiModule],
+=======
+  imports: [GioFormFilePickerModule, MatIcon, FormsModule, MarkdownComponent, GioSwaggerUiModule, GioAsyncApiModule, GioAsciidoctorModule],
+>>>>>>> 2efa73dab5 (chore(console): remove explicit `standalone: true`)
 })
 export class ApiDocumentationV4FileUploadComponent implements OnInit, ControlValueAccessor {
   @Input()
