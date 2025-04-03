@@ -748,10 +748,10 @@ public class MembershipServiceImpl extends AbstractService implements Membership
         }
     }
 
-    private void assertNoPrimaryOwnerRemoval(RoleEntity apiPORole, Set<io.gravitee.repository.management.model.Membership> memberships) {
+    private void assertNoPrimaryOwnerRemoval(RoleEntity poRole, Set<io.gravitee.repository.management.model.Membership> memberships) {
         memberships
             .stream()
-            .filter(membership -> membership.getRoleId().equals(apiPORole.getId()))
+            .filter(membership -> membership.getRoleId().equals(poRole.getId()))
             .findFirst()
             .ifPresent(membership -> {
                 throw new PrimaryOwnerRemovalException();
@@ -1748,9 +1748,15 @@ public class MembershipServiceImpl extends AbstractService implements Membership
                 .findByScopeAndName(RoleScope.API, PRIMARY_OWNER.name(), executionContext.getOrganizationId())
                 .orElseThrow(() -> new TechnicalManagementException("Unable to find API Primary Owner role"));
 
+<<<<<<< HEAD
             RoleEntity integrationPORole = roleService
                 .findByScopeAndName(RoleScope.INTEGRATION, PRIMARY_OWNER.name(), executionContext.getOrganizationId())
                 .orElseThrow(() -> new TechnicalManagementException("Unable to find Integration Primary Owner role"));
+=======
+            RoleEntity appPORole = roleService
+                .findByScopeAndName(RoleScope.APPLICATION, PRIMARY_OWNER.name(), executionContext.getOrganizationId())
+                .orElseThrow(() -> new TechnicalManagementException("Unable to find APPLICATION Primary Owner role"));
+>>>>>>> d437edab89 (fix: restrict modification of Primary Owner role for applications)
 
             Set<io.gravitee.repository.management.model.Membership> existingMemberships =
                 this.membershipRepository.findByMemberIdAndMemberTypeAndReferenceTypeAndReferenceId(
@@ -1764,6 +1770,10 @@ public class MembershipServiceImpl extends AbstractService implements Membership
             if (roles.stream().filter(role -> role.getName().equals(PRIMARY_OWNER.name())).findAny().isEmpty()) {
                 assertNoPrimaryOwnerRemoval(apiPORole, existingMemberships);
                 assertNoPrimaryOwnerRemoval(integrationPORole, existingMemberships);
+            }
+
+            if (roles.stream().filter(role -> role.getName().equals(PRIMARY_OWNER.name())).findAny().isEmpty()) {
+                assertNoPrimaryOwnerRemoval(appPORole, existingMemberships);
             }
 
             if (existingMemberships != null && !existingMemberships.isEmpty()) {
