@@ -27,7 +27,7 @@ export function initDynamicConfig(): Config {
     'nexus_staging',
     'pull_requests',
     'build_rpm',
-    'build_rpm_&_docker_images',
+    'build_docker_images',
     'release_notes_apim',
     'bridge_compatibility_tests',
     'publish_docker_images',

@@ -15,7 +15,7 @@
  */
 import { Config, Workflow, workflow } from '@circleci/circleci-config-sdk';
 import { CircleCIEnvironment } from '../pipelines';
-import { PublishRpmPackagesJob, SetupJob } from '../jobs';
+import { PublishRpmPackagesJob } from '../jobs';
 import { config } from '../config';
 
 export class BuildRpmWorkflow {

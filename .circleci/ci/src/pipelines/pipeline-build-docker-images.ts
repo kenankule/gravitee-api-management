@@ -16,10 +16,10 @@
 import { CircleCIEnvironment } from './circleci-environment';
 import { Config } from '@circleci/circleci-config-sdk';
 import { isBlank, validateGraviteeioVersion } from '../utils';
-import { BuildRpmAndDockerImagesWorkflow } from '../workflows';
+import { BuildDockerImagesWorkflow } from '../workflows';
 import { initDynamicConfig } from './config-factory';
 
-export function generateBuildRpmAndDockerImagesConfig(environment: CircleCIEnvironment): Config {
+export function generateBuildDockerImagesConfig(environment: CircleCIEnvironment): Config {
   validateGraviteeioVersion(environment.graviteeioVersion);
 
   if (isBlank(environment.branch)) {
@@ -27,7 +27,7 @@ export function generateBuildRpmAndDockerImagesConfig(environment: CircleCIEnvir
   }
 
   const dynamicConfig = initDynamicConfig();
-  const workflow = BuildRpmAndDockerImagesWorkflow.create(dynamicConfig, environment);
+  const workflow = BuildDockerImagesWorkflow.create(dynamicConfig, environment);
   dynamicConfig.addWorkflow(workflow);
   return dynamicConfig;
 }
