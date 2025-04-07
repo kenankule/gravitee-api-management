@@ -632,8 +632,8 @@ notifiers:
 #  auth:
 #    path: /auth/cockpit?token={token}
 
-#installation:
-#  type: standalone # Could be either standalone, multi-tenant; Default is standalone.
+installation:
+  type: multi-tenant # Could be either standalone, multi-tenant; Default is standalone.
 #  # Specify the URL of Management API of this instance, mandatory if you want to connect it to Cockpit
 #  api:
 #    # Specify the URLs of Management API, mandatory if you want to connect it to Cockpit with a standalone installation
@@ -667,33 +667,33 @@ notifiers:
 #           url: http://localhost:4100
 #         - envId: example
 #           url: http:/localhost:4101
-#  multi-tenant:
+  multi-tenant:
 #    # Specify the access points of your installation, mandatory if you want to connect it to Cockpit with a multi-tenant installation
 #    # You can use template variable such as {account}, {organization} or {environment}
-#    accessPoints:
-#      organization:
-#        console:
-#          host: '{organization}.{account}.example.com'
-#          secured: true
-#        console-api:
-#          host: '{organization}.{account}.example.com'
-#          secured: true
-#      environment:
-#        portal:
-#          host: '{environment}.{organization}.{account}.example.com'
-#          secured: true
-#        portal-api:
-#          host: '{environment}.{organization}.{account}.example.com'
-#          secured: true
-#        gateway:
-#          host: '{environment}.{organization}.{account}.example.com'
-#          secured: true
-#        tcp-gateway:
-#          host: '{environment}.{organization}.{account}.example.com'
-#          secured: true
-#        kafka-gateway:
-#          host: '{environment}.{organization}.{account}.example.com'
-#          secured: true
+    accessPoints:
+      organization:
+        console:
+          host: '{organization}.{account}.local:4000'
+          secured: false
+        console-api:
+          host: '{organization}.{account}.local:8083'
+          secured: false
+      environment:
+        portal:
+          host: '{environment}.{organization}.{account}.local:4100'
+          secured: false
+        portal-api:
+          host: '{environment}.{organization}.{account}.local:8083'
+          secured: false
+        gateway:
+          host: '{environment}.{organization}.{account}.local:8082'
+          secured: false
+        tcp-gateway:
+          host: '{environment}.{organization}.{account}.local'
+          secured: false
+        kafka-gateway:
+          host: 'kafka.local:9092'
+          secured: false
 
 # External Authentication
 #auth:
